@@ -1,0 +1,38 @@
+# ベースとなるDockerイメージ指定
+FROM golang:latest
+# FROM golang:1.6.0
+# コンテナ内に作業ディレクトリを作成
+
+ENV SRC_DIR=/go/src/api
+ENV GOBIN=/go/bin
+
+RUN mkdir $SRC_DIR
+WORKDIR $SRC_DIR
+
+ADD ./api $SRC_DIR
+ 
+RUN cd /go/src/;
+
+# Install dependency module
+RUN go mod init
+RUN go get github.com/go-sql-driver/mysql \
+    && go get -u github.com/gin-gonic/gin \
+    && go get github.com/gorilla/mux \
+    && go get -u github.com/jinzhu/gorm \
+    && go get github.com/gin-contrib/cors \
+    && go get gopkg.in/ini.v1
+
+# # Install dependency module
+# RUN go install github.com/go-sql-driver/mysql@latest \
+#     && go install -u github.com/gin-gonic/gin@latest \
+#     && go install github.com/gorilla/mux@latest \
+#     && go install -u github.com/jinzhu/gorm@latest \
+#     && go install github.com/gin-contrib/cors@latest \
+#     && go install gopkg.in/ini.v1@latest
+
+# コンテナログイン時のディレクトリ指定
+# WORKDIR /go/src/api
+# GoApp起動
+CMD ["go","run","main.go"]
+# ホストのファイルをコンテナの作業ディレクトリに移行
+# ADD . /go/src/work
