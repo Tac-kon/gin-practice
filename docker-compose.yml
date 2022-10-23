@@ -4,14 +4,13 @@ services:
     build:
       context: .
       dockerfile: "./Dockerfile-golang"
-    # tty: true
-    stdin_open: true
-    # command: tail -f /dev/null
     volumes:
-      - ./api:/go/src/api 
+      - ./api:/go/src/github.com/gouser/api
     ports:
       - 8080:8080
     container_name: api
+    command: >
+      sh -c "go mod init && go mod tidy && go run main.go"
     depends_on:
       - mysql
     environment:
@@ -45,9 +44,9 @@ services:
         - "3306:3306"
       container_name: mysql
       volumes:
-        - ./mysql/data:/var/lib/mysql
-        - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
-        - ./mysql/sql:/docker-entrypoint-initdb.d
+        - ./db/data:/var/lib/mysql
+        - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
+        - ./db/sql:/docker-entrypoint-initdb.d
 
   phpmyadmin:
       image: phpmyadmin/phpmyadmin

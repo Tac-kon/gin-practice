@@ -2,7 +2,7 @@
 
 package app
 
-import "github.com/gouser/money-boy/api/controllers/products"
+import "github.com/gouser/api/controllers/products"
 
 func mapUrls() {
 	router.GET("/products/:product_id", products.GetProduct)

@@ -1,8 +1,13 @@
 // main.go
+
 package main
 
-import "log"
+import (
+	"github.com/gouser/api/app"
+	// "github.com/gouser/api/app"
+	// "github.com/gouser/api"
+)
 
 func main() {
-	log.Println("Start App...")
+	app.StartApp()
 }
