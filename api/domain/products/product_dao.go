@@ -3,43 +3,51 @@
 package products
 
 import (
-	"fmt"
-
+	"github.com/gouser/api/datasources/mysql/products_db"
 	"github.com/gouser/api/utils/errors"
-)
-
-var (
-	productsDB = make(map[uint64]*Product)
+	"github.com/gouser/api/utils/mysqlutils"
 )
 
 // Get - product
 func (p *Product) Get() *errors.ApiErr {
-	result := productsDB[p.ID]
-	if result == nil {
-		return errors.NewNotFoundError(fmt.Sprintf("product %d not found", p.ID))
+	if result := products_db.Client.Where("id = ?", p.Model.ID).Find(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
 	}
-
-	p.ID = result.ID
-	p.Name = result.Name
-	p.Detail = result.Detail
-	p.Price = result.Price
-	p.Img = result.Img
-	p.CreatedAt = result.CreatedAt
-	p.UpdatedAt = result.UpdatedAt
-	p.DeletedAt = result.DeletedAt
-
 	return nil
 }
 
 // Save - product
 func (p *Product) Save() *errors.ApiErr {
-	current := productsDB[p.ID]
-	if current != nil {
-		if current.Name == p.Name {
-			return errors.NewBadRequestError(fmt.Sprintf("name %s already registered", p.Name))
-		}
-		return errors.NewBadRequestError(fmt.Sprintf("product %d already exists", p.ID))
+	// https://gorm.io/ja_JP/docs/error_handling.html
+	if result := products_db.Client.Create(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
 	}
-	productsDB[p.ID] = p
+	return nil
+}
+
+// Update - product
+func (p *Product) Update() *errors.ApiErr {
+	if result := products_db.Client.Save(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
+	}
+	return nil
+}
+
+// PartialUpdate - product
+func (p *Product) PartialUpdate() *errors.ApiErr {
+	if result := products_db.Client.
+		Table("products").
+		Where("id IN (?)", p.ID).
+		Updates(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
+	}
+	return nil
+}
+
+// Delete - product
+func (p *Product) Delete() *errors.ApiErr {
+	if result := products_db.Client.Delete(&p); result.Error != nil {
+		return mysqlutils.ParseError(result.Error)
+	}
 	return nil
 }
