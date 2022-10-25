@@ -18,10 +18,19 @@ func NewBadRequestError(message string) *ApiErr {
 	}
 }
 
+// データが見つからないエラー(404)
 func NewNotFoundError(message string) *ApiErr {
 	return &ApiErr{
 		Message: message,
 		Status:  http.StatusNotFound,
 		Error:   "not_found",
+	}
+}
+
+func NewInternalServerError(message string) *ApiErr {
+	return &ApiErr{
+		Message: message,
+		Status:  http.StatusInternalServerError,
+		Error:   "internal_server_error",
 	}
 }
