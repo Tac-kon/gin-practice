@@ -4,12 +4,8 @@ ENV SRC_DIR=/go/src/github.com/gouser/api
 ENV GOBIN=/go/bin
 
 RUN mkdir -p $SRC_DIR
-ADD ./api $SRC_DIR
-
 WORKDIR $SRC_DIR
-
-# RUN go mod init
-# RUN go mod tidy
+ADD ./api .
 
 RUN go get github.com/go-sql-driver/mysql \
     && go get -u github.com/gin-gonic/gin \

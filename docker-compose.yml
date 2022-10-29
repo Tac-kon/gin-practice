@@ -9,8 +9,6 @@ services:
     ports:
       - 8080:8080
     container_name: api
-    command: >
-      sh -c "go mod tidy && go run main.go"
     depends_on:
       - mysql
     environment:
