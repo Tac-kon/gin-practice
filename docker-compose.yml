@@ -1,6 +1,6 @@
 version: '3'
 services:
-  app:
+  api:
     build:
       context: .
       dockerfile: "./api/Dockerfile-golang"
@@ -18,20 +18,20 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_DATABASE: money-boys
 
-  # frontend:
-  #     build:
-  #       context: .
-  #       dockerfile: "./Dockerfile-nodejs"
-  #     volumes:
-  #       - ./frontend:/frontend
-  #     command: >
-  #       sh -c "cd frontend && yarn start"
-  #     ports:
-  #       - "3000:3000"
-  #     container_name: frontend
-  #     depends_on:
-  #       - api
-  #     stdin_open: true
+  frontend:
+      build:
+        context: .
+        dockerfile: "./frontend/Dockerfile-nodejs"
+      volumes:
+        - ./frontend:/usr/src/frontend
+      command: >
+        sh -c "yarn install && yarn start"
+      ports:
+        - "3000:3000"
+      container_name: frontend
+      depends_on:
+        - api
+      stdin_open: true
 
   mysql:
       image: mysql:5.7.22

@@ -1,0 +1,11 @@
+# # Dockerfile-nodejs
+FROM node:18.12.0-alpine
+
+ENV SRC_DIR=/usr/src/frontend
+
+RUN mkdir -p $SRC_DIR
+WORKDIR $SRC_DIR
+ADD ./frontend .
+
+RUN yarn install
+CMD ["yarn", "start"]
